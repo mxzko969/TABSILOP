@@ -40,11 +40,11 @@
         </div>
         <div class="form-row">
           <label for="password">4-digit PIN</label>
-          <input id="password" name="password" type="password" inputmode="numeric" pattern="\d{4}" placeholder="1234" required />
+          <input id="password" name="password" type="password" inputmode="numeric" pattern="\d{4}" maxlength="4" autocomplete="new-password" placeholder="1234" required />
         </div>
         <div class="form-row">
           <label for="confirmPassword">Confirm PIN</label>
-          <input id="confirmPassword" name="confirmPassword" type="password" inputmode="numeric" pattern="\d{4}" placeholder="1234" required />
+          <input id="confirmPassword" name="confirmPassword" type="password" inputmode="numeric" pattern="\d{4}" maxlength="4" autocomplete="new-password" placeholder="1234" required />
         </div>
         <div class="form-row">
           <button type="submit" class="primary-button">Register</button>
