@@ -400,6 +400,33 @@ textarea {
   color: var(--muted);
 }
 
+.confirmation-container {
+  max-width: 820px;
+}
+
+.confirmation-card {
+  order: initial;
+}
+
+.receipt-grid {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.receipt-grid p {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.receipt-grid span {
+  color: var(--text);
+  text-align: right;
+}
+
 .footer {
   text-align: center;
   padding: 1.25rem 1.5rem 2rem;
