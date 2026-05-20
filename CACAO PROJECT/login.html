@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Tabsilop</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-content">
+      <h1>Member Login</h1>
+      <p>Sign in to track your orders, manage your profile, and keep the same password as your Django admin account for admin access.</p>
+    </div>
+    <div class="page-actions">
+      <a href="/" class="secondary-button">Home</a>
+      <a href="register.html" class="secondary-button">Register</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="bundles">
+      <h2>Log In</h2>
+      <form id="loginForm">
+        <div class="form-row">
+          <label for="email">Email Address</label>
+          <input id="email" name="email" type="email" placeholder="you@example.com" required />
+        </div>
+        <div class="form-row">
+          <label for="password">4-digit PIN</label>
+          <input id="password" name="password" type="password" inputmode="numeric" pattern="\d{4}" placeholder="1234" required />
+        </div>
+        <div class="form-row">
+          <button type="submit" class="primary-button">Log In</button>
+        </div>
+        <p id="loginMessage" class="form-note"></p>
+      </form>
+      <p>Don't have an account? <a href="register.html">Register now</a>.</p>
+    </section>
+  </main>
+
+  <script src="login.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "tabsilop-store",
+  "version": "1.0.0",
+  "description": "Tabsilop bundle ordering web app.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["tabsilop", "cacao", "store", "bundle", "order"],
+  "author": "Tabsilop",
+  "license": "MIT"
+}

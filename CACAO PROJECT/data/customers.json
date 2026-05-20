@@ -1,0 +1,20 @@
+{
+  "138274": {
+    "clientId": "138274",
+    "name": "Dion Baumbad",
+    "contact": "09811279992",
+    "email": "veejaycaturan@gmail.com",
+    "address": "89 Washington St Washington",
+    "dateRegistered": "2026-05-20T02:14:37.470Z",
+    "rewards": 150
+  },
+  "veejaycaturan@gmail.com": {
+    "email": "veejaycaturan@gmail.com",
+    "name": "Mirasol Casupas",
+    "contact": "09811279992",
+    "address": "89 Washington St Washington",
+    "dateRegistered": "2026-05-20T05:55:47.540Z",
+    "rewards": 0,
+    "passwordHash": "6f6a4e56098cfd9af29e3ae549503b370211a4e94421457fe4cfd39a38a1fa08"
+  }
+}
