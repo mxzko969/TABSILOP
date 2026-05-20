@@ -460,7 +460,7 @@ const server = http.createServer((req, res) => {
   }
 
   // Static file serving (fall back to index.html for '/')
-  const requestedPath = decodeURI(req.url);
+  const requestedPath = reqUrl;
   let sanitizedPath = path.normalize(requestedPath).replace(/^\.+/, '');
   if (sanitizedPath === '/' || sanitizedPath === '\\') {
     sanitizedPath = 'index.html';
