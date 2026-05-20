@@ -12,6 +12,11 @@ if (registerLink && urlParams.get('next')) {
   registerLink.href = `register.html?next=${encodeURIComponent(urlParams.get('next'))}`;
 }
 
+const passwordInput = document.getElementById('password');
+passwordInput.addEventListener('input', () => {
+  passwordInput.value = passwordInput.value.replace(/\D/g, '').slice(0, 4);
+});
+
 loginForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   loginMessage.textContent = '';
