@@ -12,6 +12,15 @@ if (loginLink && urlParams.get('next')) {
   loginLink.href = `login.html?next=${encodeURIComponent(urlParams.get('next'))}`;
 }
 
+function lockPinInput(input) {
+  input.addEventListener('input', () => {
+    input.value = input.value.replace(/\D/g, '').slice(0, 4);
+  });
+}
+
+lockPinInput(document.getElementById('password'));
+lockPinInput(document.getElementById('confirmPassword'));
+
 registerForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   registerMessage.textContent = '';
