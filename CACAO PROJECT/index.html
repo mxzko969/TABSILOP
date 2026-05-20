@@ -32,7 +32,7 @@
       <a href="login.html?next=index.html" class="secondary-button">Log In</a>
       <a href="register.html?next=index.html" class="secondary-button">Register</a>
       <a id="profileLink" href="profile.html" class="secondary-button">My Profile</a>
-      <a id="adminLink" href="admin.html" class="secondary-button">Admin Panel</a>
+      <a id="adminLink" href="admin.html" class="secondary-button hidden">Admin Panel</a>
     </div>
     <div id="authNotice" class="auth-notice hidden">
       <p>Please log in or register to access ordering and your profile.</p>
@@ -51,9 +51,9 @@
             <p>Single handcrafted cacao bar with tasting notes.</p>
             <span class="price">₱150</span>
             <div class="qty-control">
-              <button type="button" id="soloMinus" aria-label="Decrease quantity">−</button>
+              <button type="button" id="soloMinus" aria-label="Decrease Cacao Solo quantity">−</button>
               <input id="soloQty" type="number" min="1" value="1" aria-label="Cacao Solo quantity" />
-              <button type="button" id="soloPlus" aria-label="Increase quantity">+</button>
+              <button type="button" id="soloPlus" aria-label="Increase Cacao Solo quantity">+</button>
             </div>
           </div>
         </label>
@@ -65,6 +65,11 @@
             <img class="bundle-image" src="images/barkada.svg" alt="Barkada bundle" />
             <p>Share delicious cacao bundles with your friends.</p>
             <span class="price">₱450</span>
+            <div class="qty-control">
+              <button type="button" id="barkadaMinus" aria-label="Decrease Barkada quantity">−</button>
+              <input id="barkadaQty" type="number" min="1" value="1" aria-label="Barkada quantity" />
+              <button type="button" id="barkadaPlus" aria-label="Increase Barkada quantity">+</button>
+            </div>
           </div>
         </label>
 
@@ -75,6 +80,11 @@
             <img class="bundle-image" src="images/gift-pack.svg" alt="Gift Pack bundle" />
             <p>Beautifully wrapped cacao gift set for any occasion.</p>
             <span class="price">₱1400</span>
+            <div class="qty-control">
+              <button type="button" id="giftPackMinus" aria-label="Decrease Gift Pack quantity">−</button>
+              <input id="giftPackQty" type="number" min="1" value="1" aria-label="Gift Pack quantity" />
+              <button type="button" id="giftPackPlus" aria-label="Increase Gift Pack quantity">+</button>
+            </div>
           </div>
         </label>
       </div>
