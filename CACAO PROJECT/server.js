@@ -3,6 +3,7 @@ const http = require('http');
 const fs = require('fs');
 const crypto = require('crypto');
 const port = process.env.PORT || 3000;
+const djangoBaseUrl = process.env.DJANGO_BASE_URL || 'http://127.0.0.1:8000';
 // Keep this in sync with your Django admin password for the admin-only page.
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin1234';
 
@@ -26,6 +27,11 @@ const mimeTypes = {
   '.ico': 'image/x-icon'
 };
 const dataDir = path.join(__dirname, 'data');
+const fallbackProducts = [
+  { name: 'Cacao Solo', category: 'Cacao Solo', image_url: '/images/cacao-solo.svg' },
+  { name: 'Barkada', category: 'Barkada', image_url: '/images/barkada.svg' },
+  { name: 'Gift Pack', category: 'Gift Pack', image_url: '/images/gift-pack.svg' },
+];
 
 function ensureDataDir() {
   try { fs.mkdirSync(dataDir); } catch (e) { /* ignore */ }
@@ -419,7 +425,8 @@ const server = http.createServer((req, res) => {
 
         if (reqUrl === '/api/django-products' && method === 'GET') {
           // Proxy to Django products API to avoid CORS in browser
-          const djangoReq = http.request({ hostname: '127.0.0.1', port: 8000, path: '/api/products/', method: 'GET' }, djangoRes => {
+          const djangoUrl = new URL('/api/products/', djangoBaseUrl);
+          const djangoReq = http.request(djangoUrl, { method: 'GET' }, djangoRes => {
             let data = '';
             djangoRes.on('data', chunk => data += chunk);
             djangoRes.on('end', () => {
@@ -428,8 +435,14 @@ const server = http.createServer((req, res) => {
             });
           });
           djangoReq.on('error', err => {
-            res.writeHead(502, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Unable to reach Django API', detail: err.message }));
+            if (process.env.DJANGO_BASE_URL) {
+              res.writeHead(502, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ error: 'Unable to reach Django API', detail: err.message }));
+              return;
+            }
+
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(fallbackProducts));
           });
           djangoReq.end();
           return;
