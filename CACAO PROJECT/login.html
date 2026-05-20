@@ -10,7 +10,7 @@
   <header class="hero">
     <div class="hero-content">
       <h1>Member Login</h1>
-      <p>Sign in to track your orders, manage your profile, and keep the same password as your Django admin account for admin access.</p>
+      <p>Sign in to track your orders, manage your profile, and continue checkout faster.</p>
     </div>
     <div class="page-actions">
       <a href="/" class="secondary-button">Home</a>
@@ -28,7 +28,7 @@
         </div>
         <div class="form-row">
           <label for="password">4-digit PIN</label>
-          <input id="password" name="password" type="password" inputmode="numeric" pattern="\d{4}" placeholder="1234" required />
+          <input id="password" name="password" type="password" inputmode="numeric" pattern="\d{4}" maxlength="4" autocomplete="current-password" placeholder="1234" required />
         </div>
         <div class="form-row">
           <button type="submit" class="primary-button">Log In</button>
