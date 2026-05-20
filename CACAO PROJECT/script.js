@@ -38,8 +38,37 @@ function formatPeso(amount) {
 }
 
 const pendingOrderKey = 'pendingOrderData';
+const latestOrderKey = 'latestOrderReceipt';
+const bundleQuantityInputs = {
+  'Cacao Solo': 'soloQty',
+  'Barkada': 'barkadaQty',
+  'Gift Pack': 'giftPackQty',
+};
 
 let orders = [];
+
+function getQuantityInput(bundle) {
+  const id = bundleQuantityInputs[bundle];
+  return id ? document.getElementById(id) : null;
+}
+
+function normalizeQuantity(input) {
+  if (!input) return 1;
+  const quantity = Math.max(1, parseInt(input.value || '1', 10) || 1);
+  input.value = quantity;
+  return quantity;
+}
+
+function getSelectedQuantity() {
+  const selectedBundle = document.querySelector('input[name="bundle"]:checked')?.value || 'Cacao Solo';
+  return normalizeQuantity(getQuantityInput(selectedBundle));
+}
+
+function getAllQuantities() {
+  return Object.fromEntries(
+    Object.keys(bundleQuantityInputs).map((bundle) => [bundle, normalizeQuantity(getQuantityInput(bundle))])
+  );
+}
 
 function getOrderFormData() {
   return {
@@ -52,7 +81,8 @@ function getOrderFormData() {
     notes: document.getElementById('notes').value.trim(),
     bundle: document.querySelector('input[name="bundle"]:checked')?.value || 'Cacao Solo',
     extras: getSelectedExtras(),
-    quantity: document.getElementById('soloQty') ? Math.max(1, parseInt(document.getElementById('soloQty').value || '1', 10)) : 1,
+    quantity: getSelectedQuantity(),
+    quantities: getAllQuantities(),
   };
 }
 
@@ -93,8 +123,14 @@ function restorePendingOrder(data) {
       input.checked = data.extras.includes(input.value);
     });
   }
-  if (document.getElementById('soloQty')) {
-    document.getElementById('soloQty').value = data.quantity || 1;
+  if (data.quantities && typeof data.quantities === 'object') {
+    Object.entries(data.quantities).forEach(([bundle, quantity]) => {
+      const input = getQuantityInput(bundle);
+      if (input) input.value = Math.max(1, parseInt(quantity || '1', 10) || 1);
+    });
+  } else if (data.bundle) {
+    const input = getQuantityInput(data.bundle);
+    if (input) input.value = data.quantity || 1;
   }
   updateSummary();
 }
@@ -132,7 +168,7 @@ function updatePageVisibility() {
     profileLink.classList.toggle('hidden', !loggedIn);
   }
   if (adminLink) {
-    adminLink.classList.toggle('hidden', !loggedIn);
+    adminLink.classList.add('hidden');
   }
 }
 
@@ -172,13 +208,8 @@ function updateSummary() {
   const timeValue = document.getElementById('time').value;
   let price = selectedBundle ? bundlePrices[selectedBundle.value] || 0 : 0;
   const extras = getSelectedExtras();
-  const qtyInput = document.getElementById('soloQty');
-  const quantity = selectedBundle && selectedBundle.value === 'Cacao Solo'
-    ? Math.max(1, parseInt(qtyInput.value || '1', 10))
-    : 1;
-  if (selectedBundle && selectedBundle.value === 'Cacao Solo') {
-    price = price * quantity;
-  }
+  const quantity = getSelectedQuantity();
+  price = price * quantity;
 
   const email = document.getElementById('email').value.trim() || 'N/A';
   const clientName = document.getElementById('name').value.trim() || 'N/A';
@@ -238,6 +269,10 @@ function resetForm() {
   orderForm.reset();
   const defaultBundle = document.querySelector('input[name="bundle"][value="Cacao Solo"]');
   if (defaultBundle) defaultBundle.checked = true;
+  Object.values(bundleQuantityInputs).forEach((id) => {
+    const input = document.getElementById(id);
+    if (input) input.value = 1;
+  });
   summaryStatus.textContent = 'Ready for a new transaction. Choose another bundle anytime.';
   summaryStatus.style.color = 'var(--muted)';
   newOrderButton.disabled = true;
@@ -248,15 +283,36 @@ bundleInputs.forEach((input) => {
   input.addEventListener('change', updateSummary);
 });
 
-// quantity controls for Cacao Solo
-const soloPlus = document.getElementById('soloPlus');
-const soloMinus = document.getElementById('soloMinus');
-const soloQty = document.getElementById('soloQty');
-if (soloPlus && soloMinus && soloQty) {
-  soloPlus.addEventListener('click', () => { soloQty.value = Math.max(1, parseInt(soloQty.value || '1', 10) + 1); updateSummary(); });
-  soloMinus.addEventListener('click', () => { soloQty.value = Math.max(1, parseInt(soloQty.value || '1', 10) - 1); updateSummary(); });
-  soloQty.addEventListener('change', () => { soloQty.value = Math.max(1, parseInt(soloQty.value || '1', 10)); updateSummary(); });
+function attachQuantityControls(prefix, bundle) {
+  const plus = document.getElementById(`${prefix}Plus`);
+  const minus = document.getElementById(`${prefix}Minus`);
+  const input = getQuantityInput(bundle);
+  const bundleInput = document.querySelector(`input[name="bundle"][value="${bundle}"]`);
+
+  if (!plus || !minus || !input) return;
+
+  plus.addEventListener('click', () => {
+    input.value = normalizeQuantity(input) + 1;
+    if (bundleInput) bundleInput.checked = true;
+    updateSummary();
+  });
+
+  minus.addEventListener('click', () => {
+    input.value = Math.max(1, normalizeQuantity(input) - 1);
+    if (bundleInput) bundleInput.checked = true;
+    updateSummary();
+  });
+
+  input.addEventListener('change', () => {
+    normalizeQuantity(input);
+    if (bundleInput) bundleInput.checked = true;
+    updateSummary();
+  });
 }
+
+attachQuantityControls('solo', 'Cacao Solo');
+attachQuantityControls('barkada', 'Barkada');
+attachQuantityControls('giftPack', 'Gift Pack');
 
 document.getElementById('date').addEventListener('change', updateSummary);
 document.getElementById('time').addEventListener('change', updateSummary);
@@ -333,8 +389,7 @@ orderForm.addEventListener('submit', async (event) => {
     return;
   }
 
-  const qtyInput = document.getElementById('soloQty');
-  const quantity = bundle === 'Cacao Solo' ? Math.max(1, parseInt(qtyInput?.value || '1', 10)) : 1;
+  const quantity = normalizeQuantity(getQuantityInput(bundle));
 
   if (!isAuthenticated || !currentProfile || currentProfile.email !== email) {
     summaryStatus.textContent = 'You must be logged in with your account to place an order.';
@@ -379,15 +434,18 @@ orderForm.addEventListener('submit', async (event) => {
     await fetchOrders();
     updateSummary();
 
-    summaryStatus.textContent = `Order received! ${bundle} is scheduled for ${date} at ${time}.`;
-    summaryStatus.style.color = '#2c1a11';
-    newOrderButton.disabled = false;
+    localStorage.setItem(latestOrderKey, JSON.stringify({
+      ...orderData,
+      orderId: body.orderId,
+      dateRegistered: body.dateRegistered,
+    }));
+    clearPendingOrder();
 
     if (body.lowStock && body.lowStock.length) {
       alert('Low stock alert for: ' + body.lowStock.join(', '));
     }
 
-    resetForm();
+    location.href = 'order-confirmation.html';
   } catch (err) {
     summaryStatus.textContent = err.message;
     summaryStatus.style.color = 'crimson';
