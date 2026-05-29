@@ -4,7 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tabsilop Bundles</title>
-  <link rel="stylesheet" href="styles.css" />
+  <script>
+    (function () {
+      try {
+        var loggedIn = Boolean(localStorage.getItem('userEmail'));
+        document.documentElement.classList.toggle('is-authenticated', loggedIn);
+        document.documentElement.classList.toggle('is-guest', !loggedIn);
+      } catch (error) {
+        document.documentElement.classList.add('is-guest');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="styles.css?v=20260529-qty" />
 </head>
 <body>
   <header class="hero">
@@ -30,9 +41,9 @@
       </div>
     </section>
     <div class="page-actions">
-      <a href="login.html?next=index.html" class="secondary-button">Log In</a>
-      <a href="register.html?next=index.html" class="secondary-button">Register</a>
-      <a id="profileLink" href="profile.html" class="secondary-button">My Profile</a>
+      <a id="loginLink" href="login.html?next=index.html" class="secondary-button guest-auth-link">Log In</a>
+      <a id="registerLink" href="register.html?next=index.html" class="secondary-button guest-auth-link">Register</a>
+      <a id="profileLink" href="profile.html" class="secondary-button hidden">My Profile</a>
       <a id="adminLink" href="admin.html" class="secondary-button hidden">Admin Panel</a>
     </div>
     <div id="authNotice" class="auth-notice hidden">
@@ -49,10 +60,10 @@
           <div>
             <h3>Cacao Solo</h3>
             <img class="bundle-image" src="images/cacao-solo.jpg" alt="Cacao Solo bundle" />
-            <p>Single handcrafted cacao bar with tasting notes.</p>
-            <span class="price">₱150</span>
+            <p>Includes 1 Tabsilop piece with tasting notes.</p>
+            <span class="price">&#8369;150</span>
             <div class="qty-control">
-              <button type="button" id="soloMinus" aria-label="Decrease Cacao Solo quantity">−</button>
+              <button type="button" id="soloMinus" aria-label="Decrease Cacao Solo quantity">-</button>
               <input id="soloQty" type="number" min="1" value="1" aria-label="Cacao Solo quantity" />
               <button type="button" id="soloPlus" aria-label="Increase Cacao Solo quantity">+</button>
             </div>
@@ -64,11 +75,11 @@
           <div>
             <h3>Barkada</h3>
             <img class="bundle-image" src="images/barkada.jpg" alt="Barkada bundle" />
-            <p>Share delicious cacao bundles with your friends.</p>
-            <span class="price">₱450</span>
+            <p>Includes 5 Tabsilop pieces for sharing.</p>
+            <span class="price">&#8369;750</span>
             <div class="qty-control">
-              <button type="button" id="barkadaMinus" aria-label="Decrease Barkada quantity">−</button>
-              <input id="barkadaQty" type="number" min="1" value="1" aria-label="Barkada quantity" />
+              <button type="button" id="barkadaMinus" aria-label="Decrease Barkada quantity">-</button>
+              <input id="barkadaQty" type="number" min="5" value="5" aria-label="Barkada quantity" />
               <button type="button" id="barkadaPlus" aria-label="Increase Barkada quantity">+</button>
             </div>
           </div>
@@ -79,11 +90,11 @@
           <div>
             <h3>Gift Pack</h3>
             <img class="bundle-image" src="images/gift-pack.jpg" alt="Gift Pack bundle" />
-            <p>Beautifully wrapped cacao gift set for any occasion.</p>
-            <span class="price">₱1400</span>
+            <p>Includes 10 Tabsilop pieces in a gift-ready pack.</p>
+            <span class="price">&#8369;1500</span>
             <div class="qty-control">
-              <button type="button" id="giftPackMinus" aria-label="Decrease Gift Pack quantity">−</button>
-              <input id="giftPackQty" type="number" min="1" value="1" aria-label="Gift Pack quantity" />
+              <button type="button" id="giftPackMinus" aria-label="Decrease Gift Pack quantity">-</button>
+              <input id="giftPackQty" type="number" min="10" value="10" aria-label="Gift Pack quantity" />
               <button type="button" id="giftPackPlus" aria-label="Increase Gift Pack quantity">+</button>
             </div>
           </div>
@@ -148,10 +159,10 @@
         <p><strong>Full Name:</strong> <span id="summaryName">N/A</span></p>
         <p><strong>Date Registered:</strong> <span id="summaryDateRegistered">N/A</span></p>
         <p><strong>Bundle:</strong> <span id="summaryBundle">Cacao Solo</span></p>
-        <p><strong>Quantity:</strong> <span id="summaryQuantity">1</span></p>
+        <p><strong>Tabsilop Quantity:</strong> <span id="summaryQuantity">1</span></p>
         <p><strong>Delivery Date:</strong> <span id="summaryDate">Not selected</span></p>
         <p><strong>Delivery Time:</strong> <span id="summaryTime">Not selected</span></p>
-        <p><strong>Order Total:</strong> <span id="summaryPrice">₱0</span></p>
+        <p><strong>Order Total:</strong> <span id="summaryPrice">&#8369;0</span></p>
         <p><strong>Extras:</strong> <span id="summaryExtras">None</span></p>
         <p><strong>Order Status:</strong> <span id="summaryStatus">Waiting for submission</span></p>
       </div>
@@ -182,6 +193,6 @@
     <p>Ready to launch your cacao cravings? Deploy this static site on Render with a single repository.</p>
   </footer>
 
-  <script src="script.js"></script>
+  <script src="script.js?v=20260529-qty"></script>
 </body>
 </html>

@@ -1,7 +1,9 @@
 const registerForm = document.getElementById('registerForm');
 const registerMessage = document.getElementById('registerMessage');
 const urlParams = new URLSearchParams(window.location.search);
-const nextPage = urlParams.get('next') || 'profile.html';
+const requestedNextPage = urlParams.get('next') || 'index.html';
+const authPages = new Set(['login.html', 'register.html']);
+const nextPage = authPages.has(requestedNextPage) ? 'index.html' : requestedNextPage;
 
 if (localStorage.getItem('userEmail')) {
   location.href = nextPage;
