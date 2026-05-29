@@ -34,6 +34,15 @@ body {
   font-size: clamp(2.25rem, 4vw, 3.5rem);
 }
 
+.site-logo {
+  width: 92px;
+  height: 92px;
+  display: block;
+  margin: 0 auto 1rem;
+  border-radius: 22px;
+  box-shadow: 0 14px 28px rgba(122, 74, 46, 0.2);
+}
+
 .hero p {
   margin: 0 auto;
   max-width: 42rem;

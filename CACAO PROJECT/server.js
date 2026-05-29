@@ -33,6 +33,17 @@ const fallbackProducts = [
   { name: 'Gift Pack', category: 'Gift Pack', image_url: '/images/gift-pack.svg' },
 ];
 
+function toDjangoMediaProxyUrl(imageUrl) {
+  if (!imageUrl) return null;
+  try {
+    const parsedUrl = new URL(imageUrl, djangoBaseUrl);
+    if (!parsedUrl.pathname.startsWith('/media/')) return imageUrl;
+    return `/api/django-media?path=${encodeURIComponent(parsedUrl.pathname + parsedUrl.search)}`;
+  } catch (e) {
+    return imageUrl;
+  }
+}
+
 function ensureDataDir() {
   try { fs.mkdirSync(dataDir); } catch (e) { /* ignore */ }
 }
@@ -430,6 +441,20 @@ const server = http.createServer((req, res) => {
             let data = '';
             djangoRes.on('data', chunk => data += chunk);
             djangoRes.on('end', () => {
+              try {
+                const products = JSON.parse(data);
+                const proxiedProducts = Array.isArray(products)
+                  ? products.map((product) => ({
+                    ...product,
+                    image_url: toDjangoMediaProxyUrl(product.image_url),
+                  }))
+                  : products;
+                res.writeHead(djangoRes.statusCode || 200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(proxiedProducts));
+                return;
+              } catch (e) {
+                // Fall through and return the original Django response.
+              }
               res.writeHead(djangoRes.statusCode || 200, { 'Content-Type': 'application/json' });
               res.end(data);
             });
@@ -443,6 +468,31 @@ const server = http.createServer((req, res) => {
 
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(fallbackProducts));
+          });
+          djangoReq.end();
+          return;
+        }
+
+        if (reqUrl === '/api/django-media' && method === 'GET') {
+          const q = req.url.split('?')[1] || '';
+          const params = new URLSearchParams(q);
+          const mediaPath = params.get('path') || '';
+
+          if (!mediaPath.startsWith('/media/')) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Invalid media path' }));
+            return;
+          }
+
+          const djangoUrl = new URL(mediaPath, djangoBaseUrl);
+          const djangoReq = http.request(djangoUrl, { method: 'GET' }, djangoRes => {
+            const contentType = djangoRes.headers['content-type'] || 'application/octet-stream';
+            res.writeHead(djangoRes.statusCode || 200, { 'Content-Type': contentType });
+            djangoRes.pipe(res);
+          });
+          djangoReq.on('error', err => {
+            res.writeHead(502, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Unable to reach Django media', detail: err.message }));
           });
           djangoReq.end();
           return;
