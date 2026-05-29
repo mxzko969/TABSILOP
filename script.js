@@ -20,8 +20,13 @@ const profileRewards = document.getElementById('profileRewards');
 const loadProfileButton = document.getElementById('loadProfileButton');
 const mainContent = document.getElementById('mainContent');
 const profileLink = document.getElementById('profileLink');
+const loginLink = document.getElementById('loginLink');
+const registerLink = document.getElementById('registerLink');
 const adminLink = document.getElementById('adminLink');
 const authNotice = document.getElementById('authNotice');
+const guestAuthLinks = document.querySelectorAll(
+  '.guest-auth-link, .page-actions a[href^="login.html"], .page-actions a[href^="register.html"]'
+);
 
 let currentProfile = null;
 const loggedInEmail = localStorage.getItem('userEmail');
@@ -29,12 +34,22 @@ let isAuthenticated = Boolean(loggedInEmail);
 
 const bundlePrices = {
   'Cacao Solo': 150,
-  'Barkada': 450,
-  'Gift Pack': 1400,
+  'Barkada': 150,
+  'Gift Pack': 150,
 };
 
-function formatPeso(amount) {
+const defaultBundleQuantities = {
+  'Cacao Solo': 1,
+  'Barkada': 5,
+  'Gift Pack': 10,
+};
+
+function legacyFormatPeso(amount) {
   return `₱${amount}`;
+}
+
+function formatPesoDisplay(amount) {
+  return `\u20B1${amount}`;
 }
 
 const pendingOrderKey = 'pendingOrderData';
@@ -54,9 +69,17 @@ function getQuantityInput(bundle) {
 
 function normalizeQuantity(input) {
   if (!input) return 1;
-  const quantity = Math.max(1, parseInt(input.value || '1', 10) || 1);
+  const minimum = Math.max(1, parseInt(input.min || '1', 10) || 1);
+  const quantity = Math.max(minimum, parseInt(input.value || String(minimum), 10) || minimum);
   input.value = quantity;
   return quantity;
+}
+
+function setDefaultQuantities() {
+  Object.entries(defaultBundleQuantities).forEach(([bundle, quantity]) => {
+    const input = getQuantityInput(bundle);
+    if (input) input.value = quantity;
+  });
 }
 
 function getSelectedQuantity() {
@@ -126,11 +149,17 @@ function restorePendingOrder(data) {
   if (data.quantities && typeof data.quantities === 'object') {
     Object.entries(data.quantities).forEach(([bundle, quantity]) => {
       const input = getQuantityInput(bundle);
-      if (input) input.value = Math.max(1, parseInt(quantity || '1', 10) || 1);
+      if (input) {
+        input.value = quantity;
+        normalizeQuantity(input);
+      }
     });
   } else if (data.bundle) {
     const input = getQuantityInput(data.bundle);
-    if (input) input.value = data.quantity || 1;
+    if (input) {
+      input.value = data.quantity || input.min || 1;
+      normalizeQuantity(input);
+    }
   }
   updateSummary();
 }
@@ -158,8 +187,14 @@ function showAuthPrompt() {
   summaryStatus.style.color = 'crimson';
 }
 
+function redirectToLogin() {
+  location.replace('login.html?next=index.html');
+}
+
 function updatePageVisibility() {
   const loggedIn = isAuthenticated;
+  document.documentElement.classList.toggle('is-authenticated', loggedIn);
+  document.documentElement.classList.toggle('is-guest', !loggedIn);
   authNotice.classList.toggle('hidden', loggedIn);
   if (mainContent) {
     mainContent.classList.toggle('hidden', !loggedIn);
@@ -167,6 +202,15 @@ function updatePageVisibility() {
   if (profileLink) {
     profileLink.classList.toggle('hidden', !loggedIn);
   }
+  if (loginLink) {
+    loginLink.classList.toggle('hidden', loggedIn);
+  }
+  if (registerLink) {
+    registerLink.classList.toggle('hidden', loggedIn);
+  }
+  guestAuthLinks.forEach((link) => {
+    link.classList.toggle('hidden', loggedIn);
+  });
   if (adminLink) {
     adminLink.classList.add('hidden');
   }
@@ -178,6 +222,7 @@ async function initializeAuthState() {
   if (!isAuthenticated) {
     setOrderAccess(false);
     showAuthPrompt();
+    redirectToLogin();
     return;
   }
 
@@ -190,8 +235,12 @@ async function initializeAuthState() {
     await fetchOrders();
   } catch (error) {
     currentProfile = null;
+    localStorage.removeItem('userEmail');
+    isAuthenticated = false;
+    updatePageVisibility();
     setOrderAccess(false);
     showAuthPrompt();
+    redirectToLogin();
   }
 }
 
@@ -221,7 +270,7 @@ function updateSummary() {
     : 'Pending';
   summaryDate.textContent = dateValue || 'Not selected';
   summaryTime.textContent = timeValue || 'Not selected';
-  summaryPrice.textContent = formatPeso(price);
+  summaryPrice.textContent = formatPesoDisplay(price);
   summaryExtras.textContent = extras.length ? extras.join(', ') : 'None';
   document.getElementById('summaryQuantity').textContent = quantity;
 }
@@ -257,7 +306,7 @@ function renderOrderHistory() {
       <p>${order.email ? `Email: ${order.email}` : ''} ${order.name ? `(${order.name})` : ''}</p>
       <p>${order.bundle} ${order.quantity ? `× ${order.quantity}` : ''} • ${order.date} at ${order.time}</p>
       <p>Date Registered: ${order.dateRegistered ? new Date(order.dateRegistered).toLocaleDateString() : 'N/A'}</p>
-      <p>Price: ${formatPeso(order.price || 0)}</p>
+      <p>Price: ${formatPesoDisplay(order.price || 0)}</p>
       <p>${extrasText}</p>
       <p>${order.notes ? `Notes: ${order.notes}` : 'No special notes'}</p>
     `;
@@ -269,10 +318,7 @@ function resetForm() {
   orderForm.reset();
   const defaultBundle = document.querySelector('input[name="bundle"][value="Cacao Solo"]');
   if (defaultBundle) defaultBundle.checked = true;
-  Object.values(bundleQuantityInputs).forEach((id) => {
-    const input = document.getElementById(id);
-    if (input) input.value = 1;
-  });
+  setDefaultQuantities();
   summaryStatus.textContent = 'Ready for a new transaction. Choose another bundle anytime.';
   summaryStatus.style.color = 'var(--muted)';
   newOrderButton.disabled = true;
@@ -298,7 +344,8 @@ function attachQuantityControls(prefix, bundle) {
   });
 
   minus.addEventListener('click', () => {
-    input.value = Math.max(1, normalizeQuantity(input) - 1);
+    const minimum = Math.max(1, parseInt(input.min || '1', 10) || 1);
+    input.value = Math.max(minimum, normalizeQuantity(input) - 1);
     if (bundleInput) bundleInput.checked = true;
     updateSummary();
   });

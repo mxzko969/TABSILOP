@@ -26,7 +26,7 @@ function renderConfirmation() {
       <p><strong>Contact:</strong> <span>${order.contact || 'N/A'}</span></p>
       <p><strong>Address:</strong> <span>${order.address || 'N/A'}</span></p>
       <p><strong>Bundle:</strong> <span>${order.bundle || 'N/A'}</span></p>
-      <p><strong>Quantity:</strong> <span>${order.quantity || 1}</span></p>
+      <p><strong>Tabsilop Quantity:</strong> <span>${order.quantity || 1}</span></p>
       <p><strong>Delivery:</strong> <span>${order.date || 'N/A'} at ${order.time || 'N/A'}</span></p>
       <p><strong>Extras:</strong> <span>${extras}</span></p>
       <p><strong>Total:</strong> <span>${formatPeso(order.price || 0)}</span></p>
