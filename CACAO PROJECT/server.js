@@ -28,9 +28,9 @@ const mimeTypes = {
 };
 const dataDir = path.join(__dirname, 'data');
 const fallbackProducts = [
-  { name: 'Cacao Solo', category: 'Cacao Solo', image_url: '/images/cacao-solo.svg' },
-  { name: 'Barkada', category: 'Barkada', image_url: '/images/barkada.svg' },
-  { name: 'Gift Pack', category: 'Gift Pack', image_url: '/images/gift-pack.svg' },
+  { name: 'Cacao Solo', category: 'Cacao Solo', image_url: '/images/cacao-solo.jpg' },
+  { name: 'Barkada', category: 'Barkada', image_url: '/images/barkada.jpg' },
+  { name: 'Gift Pack', category: 'Gift Pack', image_url: '/images/gift-pack.jpg' },
 ];
 
 function toDjangoMediaProxyUrl(imageUrl) {
