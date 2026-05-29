@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer Order Monitor</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-content">
+      <h1>Order Monitor</h1>
+      <p>Track customer orders in one place, filter by email, and review order totals instantly.</p>
+      <div class="page-actions">
+        <a href="/" class="secondary-button">Back to Shop</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="bundles">
+      <h2>Customer Order Monitoring</h2>
+      <div class="monitor-controls">
+        <div class="form-row">
+          <label for="filterEmail">Filter by Email</label>
+          <input id="filterEmail" type="text" placeholder="Enter email address" />
+        </div>
+        <button id="refreshOrders" class="primary-button">Refresh Orders</button>
+      </div>
+
+      <div class="monitor-summary">
+        <p><strong>Total Orders:</strong> <span id="ordersTotal">0</span></p>
+        <p><strong>Total Sales:</strong> <span id="ordersSales">₱0</span></p>
+        <p><strong>Matching Orders:</strong> <span id="ordersMatched">0</span></p>
+      </div>
+
+      <div class="orders-status" id="ordersStatus">Loading orders...</div>
+
+      <div class="orders-table-wrapper">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Email</th>
+              <th>Name</th>
+              <th>Bundle</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Date</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Use this page to monitor orders and customer activity separately from the checkout flow.</p>
+  </footer>
+
+  <script src="orders.js"></script>
+</body>
+</html>

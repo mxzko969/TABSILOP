@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register - Tabsilop</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-content">
+      <h1>Create Account</h1>
+      <p>Register a customer account to save your profile, track orders, and edit settings.</p>
+    </div>
+    <div class="page-actions">
+      <a href="/" class="secondary-button">Home</a>
+      <a href="login.html" class="secondary-button">Log In</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="bundles">
+      <h2>Register</h2>
+      <form id="registerForm">
+        <div class="form-row">
+          <label for="name">Full Name</label>
+          <input id="name" name="name" type="text" placeholder="Full name" required />
+        </div>
+        <div class="form-row">
+          <label for="contact">Contact Number</label>
+          <input id="contact" name="contact" type="tel" placeholder="0917-123-4567" required />
+        </div>
+        <div class="form-row">
+          <label for="email">Email Address</label>
+          <input id="email" name="email" type="email" placeholder="you@example.com" required />
+        </div>
+        <div class="form-row">
+          <label for="address">Address</label>
+          <input id="address" name="address" type="text" placeholder="Street, City, Province" required />
+        </div>
+        <div class="form-row">
+          <label for="password">4-digit PIN</label>
+          <input id="password" name="password" type="password" inputmode="numeric" pattern="\d{4}" maxlength="4" autocomplete="new-password" placeholder="1234" required />
+        </div>
+        <div class="form-row">
+          <label for="confirmPassword">Confirm PIN</label>
+          <input id="confirmPassword" name="confirmPassword" type="password" inputmode="numeric" pattern="\d{4}" maxlength="4" autocomplete="new-password" placeholder="1234" required />
+        </div>
+        <div class="form-row">
+          <button type="submit" class="primary-button">Register</button>
+        </div>
+        <p id="registerMessage" class="form-note"></p>
+      </form>
+      <p>Already have an account? <a href="login.html">Log in</a>.</p>
+    </section>
+  </main>
+
+  <script src="register.js"></script>
+</body>
+</html>

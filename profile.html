@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile - Tabsilop</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-content">
+      <h1>My Profile</h1>
+      <p>Edit your settings, update your details, and track every order from one place.</p>
+    </div>
+    <div class="page-actions">
+      <a href="/" class="secondary-button">Home</a>
+      <a href="login.html" class="secondary-button" id="logoutButton">Logout</a>
+      <a href="admin.html" class="secondary-button">Admin Panel</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="bundles">
+      <h2>Profile Settings</h2>
+      <form id="profileForm">
+        <div class="form-row">
+          <label for="name">Full Name</label>
+          <input id="name" name="name" type="text" required />
+        </div>
+        <div class="form-row">
+          <label for="contact">Contact Number</label>
+          <input id="contact" name="contact" type="tel" required />
+        </div>
+        <div class="form-row">
+          <label for="email">Email Address</label>
+          <input id="email" name="email" type="email" required />
+        </div>
+        <div class="form-row">
+          <label for="address">Address</label>
+          <input id="address" name="address" type="text" required />
+        </div>
+        <div class="form-row">
+          <label for="newPassword">New 4-digit PIN</label>
+          <input id="newPassword" name="newPassword" type="password" inputmode="numeric" pattern="\d{4}" placeholder="Leave empty to keep current" />
+        </div>
+        <div class="form-row">
+          <label for="confirmPassword">Confirm PIN</label>
+          <input id="confirmPassword" name="confirmPassword" type="password" inputmode="numeric" pattern="\d{4}" placeholder="Confirm new PIN" />
+        </div>
+        <div class="form-row">
+          <button type="submit" class="primary-button">Save Settings</button>
+        </div>
+        <p id="profileMessage" class="form-note"></p>
+      </form>
+    </section>
+
+    <section class="summary-card">
+      <h2>Order History</h2>
+      <div id="profileOrders">Loading orders...</div>
+    </section>
+  </main>
+
+  <script src="profile.js"></script>
+</body>
+</html>

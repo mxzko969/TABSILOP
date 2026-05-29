@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel - Tabsilop</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-content">
+      <h1>Admin Panel</h1>
+      <p>Restricted access for admins only. Use your admin password to log in.</p>
+    </div>
+    <div class="page-actions">
+      <a href="/" class="secondary-button">Home</a>
+      <a href="login.html" class="secondary-button">Log In</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="bundles" id="adminLoginSection">
+      <h2>Admin Login</h2>
+      <form id="adminLoginForm">
+        <div class="form-row">
+          <label for="adminPassword">Admin Password</label>
+          <input id="adminPassword" name="adminPassword" type="password" placeholder="Django admin password" required />
+        </div>
+        <div class="form-row">
+          <button type="submit" class="primary-button">Enter Admin</button>
+        </div>
+        <p id="adminLoginMessage" class="form-note"></p>
+      </form>
+    </section>
+
+    <section class="summary-card hidden" id="adminDashboardSection">
+      <div class="dashboard-header">
+        <h2>Admin Dashboard</h2>
+        <button id="adminLogoutButton" class="secondary-button">Logout</button>
+      </div>
+      <div class="monitor-summary">
+        <p><strong>Total Orders:</strong> <span id="adminOrdersTotal">0</span></p>
+        <p><strong>Total Sales:</strong> <span id="adminTotalSales">₱0</span></p>
+      </div>
+      <div class="orders-table-wrapper">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Email</th>
+              <th>Name</th>
+              <th>Bundle</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Date</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody id="adminOrdersBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="admin.js"></script>
+</body>
+</html>
